@@ -1,4 +1,6 @@
-# Simple data simulation
+############################################################
+### Simple data simulation of data with nested structure ###
+############################################################
 
 
 # Set random number generator
