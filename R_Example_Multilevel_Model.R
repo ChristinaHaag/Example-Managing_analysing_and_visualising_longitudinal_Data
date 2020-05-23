@@ -6,14 +6,16 @@
 # Set random number generator
 set.seed(1234)
 
+# Load libraries
+library(lme4) ; library(lmerTest) ; library(dplyr)
 
 # Sample size
-N <- 100
+N <- 1000
 
 # Variables in the model
 soc.connection     <- round(abs(rnorm(N, 2, sd=5)), digits = 2)    # degree of perceived social connection
 time               <- rep(1:4, N)                                # Assessment time (in years; year 1, year 2, year 3, year 4)
-subjectno          <- rep(letters[1:N], each = 4)                # Subject variable
+subjectno          <- as.factor(rep(1:N, each = 4))               # Subject variable
 intercept.variance <- rep(rnorm(N, 2, sd = 2.5), each = 4)       # Random intercept variance for each individual
 
 
@@ -33,11 +35,21 @@ Data <- data.frame(wellbeing, soc.connection, time, subjectno)
 # View simulated data
 # View(Data)
 
+# Descriptives per individual
+pre  <- subset(diary, s.period == "pre")
+
+mean.Data <- Data  %>%
+             dplyr::group_by(subjectno) %>%
+             dplyr::summarise(
+             #
+             wellbeing.mean  = mean(wellbeing),
+             wellbeing.sd    = sd(wellbeing),
+             social.mean     = mean(soc.connection),
+             social.sd       = sd(soc.connection))
+    
 
 
-# Test model using lme4 & lmerTest package in a sample with 100 participants
-library(lme4) ; library(lmerTest)
-
+# Test model
 model1 <- lmer(wellbeing ~ soc.connection*time + (1 | subjectno), data = Data)
 
 summary(model1)
