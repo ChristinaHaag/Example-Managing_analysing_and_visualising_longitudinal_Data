@@ -1,6 +1,6 @@
-############################################################
-### Simple simulation of data with nested structure ###
-############################################################
+####################################
+### Example multilevel modelling ###
+####################################
 
 
 # Set random number generator
@@ -8,6 +8,9 @@ set.seed(1234)
 
 # Load libraries
 library(lme4) ; library(lmerTest) ; library(dplyr)
+
+
+# Simple simulation of data with nested structure
 
 # Sample size
 N <- 1000
