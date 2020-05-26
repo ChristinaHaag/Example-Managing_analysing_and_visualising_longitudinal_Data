@@ -19,7 +19,7 @@ N <- 1000
 soc.connection     <- round(abs(rnorm(N, 2, sd=5)), digits = 2)    # degree of perceived social connection
 time               <- rep(1:4, N)                                  # Assessment time (in years; year 1, year 2, year 3, year 4)
 subjectno          <- as.factor(rep(1:N, each = 4))                # Subject variable
-intercept.variance <- rep(rnorm(N, 2, sd = 2.5), each = 4)         # Random intercept variance for each individual
+intercept.variance <- rep(rnorm(N, 0, sd = 2.5), each = 4)         # Random intercept variance for each individual
 
 
 
