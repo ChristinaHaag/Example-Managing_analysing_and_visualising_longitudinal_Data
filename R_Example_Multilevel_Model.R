@@ -39,7 +39,6 @@ Data <- data.frame(wellbeing, soc.connection, time, subjectno)
 # View(Data)
 
 # Descriptives per individual
-pre  <- subset(diary, s.period == "pre")
 
 mean.Data <- Data  %>%
              dplyr::group_by(subjectno) %>%
