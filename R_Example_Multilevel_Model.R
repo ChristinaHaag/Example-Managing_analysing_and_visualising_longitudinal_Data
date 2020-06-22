@@ -6,10 +6,6 @@
 # Set random number generator
 set.seed(1234)
 
-# Load libraries
-library(lme4) ; library(lmerTest) ; library(dplyr)
-
-
 # Simple simulation of data with nested structure
 
 # Sample size
@@ -38,24 +34,63 @@ Data <- data.frame(wellbeing, soc.connection, time, subjectno)
 # View simulated data
 # View(Data)
 
-# Descriptives per individual
+
+##############################################
+# Data management
+library(dplyr)
 
 mean.Data <- Data  %>%
-             dplyr::group_by(subjectno) %>%
-             dplyr::summarise(
+             select(subject, wellbeing) %>%  # Select variables
+             group_by(subject) %>%           # Group by individual
+             summarise(                      # Descriptives per individual
              #
              wellbeing.mean  = mean(wellbeing),
-             wellbeing.sd    = sd(wellbeing),
-             social.mean     = mean(soc.connection),
-             social.sd       = sd(soc.connection))
+             wellbeing.sd    = sd(wellbeing))
+
     
 
 
+##############################################
+# Analysing the data
+
 # Test model
+library(lme4) ; library(lmerTest)
+
+# Model
 model1 <- lmer(wellbeing ~ soc.connection*time + (1 | subjectno), data = Data)
 
 summary(model1)
 # Only the interaction effect is statistically detected (p < . 05)
+
+
+
+##############################################
+# Visualising longitudinal data
+
+# Select subset for individual-level plots
+subset.data <- Data[1:80,]
+
+
+# Display individual-level plots
+library(ggplot2)
+
+p <- ggplot2::ggplot(subset.data) + theme_bw() + facet_wrap("subject") +
+  
+  geom_point(aes(x = time, y = wellbeing), color="blue4", size=1.2) +
+  geom_line(aes( x = time, y = wellbeing), color="blue4", size=1.2) +
+  
+  geom_point(aes(x = time, y = soc.connection), color="red", size=1.2)  +
+  geom_line(aes( x = time, y = soc.connection), color="red", size=1.2)  +
+  scale_x_discrete(name ="assessment time") +
+  scale_y_discrete(name ="wellbeing")
+
+# Static plot
+p
+
+
+# Interactive individual-level plot
+library(plotly)
+ggplotly(p)
 
 
 
