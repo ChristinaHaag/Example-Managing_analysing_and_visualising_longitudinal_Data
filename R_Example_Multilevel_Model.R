@@ -14,7 +14,7 @@ N <- 1000
 # Variables in the model
 soc.connection     <- round(abs(rnorm(N, 2, sd=5)), digits = 2)    # degree of perceived social connection
 time               <- rep(1:4, N)                                  # Assessment time (in years; year 1, year 2, year 3, year 4)
-subjectno          <- as.factor(rep(1:N, each = 4))                # Subject variable
+subject            <- as.factor(rep(1:N, each = 4))                # Subject variable
 intercept.variance <- rep(rnorm(N, 0, sd = 2.5), each = 4)         # Random intercept variance for each individual
 
 
@@ -28,7 +28,7 @@ wellbeing <- (20 + intercept.variance)  + 0.2*time + 0.4*soc.connection + 0.9*so
 
 
 # Combine to data.frame
-Data <- data.frame(wellbeing, soc.connection, time, subjectno)
+Data <- data.frame(wellbeing, soc.connection, time, subject)
 
 
 # View simulated data
@@ -40,14 +40,14 @@ Data <- data.frame(wellbeing, soc.connection, time, subjectno)
 library(dplyr)
 
 mean.Data <- Data  %>%
-             select(subject, wellbeing) %>%  # Select variables
-             group_by(subject) %>%           # Group by individual
-             summarise(                      # Descriptives per individual
-             #
-             wellbeing.mean  = mean(wellbeing),
-             wellbeing.sd    = sd(wellbeing))
+  select(subject, wellbeing) %>%  # Select variables
+  group_by(subject) %>%           # Group by individual
+  summarise(                      # Descriptives per individual
+    #
+    wellbeing.mean  = mean(wellbeing),
+    wellbeing.sd    = sd(wellbeing))
 
-    
+
 
 
 ##############################################
@@ -57,7 +57,7 @@ mean.Data <- Data  %>%
 library(lme4) ; library(lmerTest)
 
 # Model
-model1 <- lmer(wellbeing ~ soc.connection*time + (1 | subjectno), data = Data)
+model1 <- lmer(wellbeing ~ soc.connection*time + (1 | subject), data = Data)
 
 summary(model1)
 # Only the interaction effect is statistically detected (p < . 05)
@@ -91,11 +91,4 @@ p
 # Interactive individual-level plot
 library(plotly)
 ggplotly(p)
-
-
-
-
-
-
-
 
